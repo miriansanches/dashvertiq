@@ -3,6 +3,8 @@ import pandas as pd
 import plotly.graph_objects as go
 from datetime import datetime
 from io import BytesIO
+import openpyxl
+
 
 # Configuração da página
 st.set_page_config(
