@@ -329,8 +329,8 @@ with tab3:
         
         st.markdown("---")
         st.subheader("📊 Pipeline de Seguros")
-        df_pipeline = safe_filter_by_column(df, 'Pipeline')
-        display_data_table(df_pipeline, "Pipeline Seguros", ['Pipeline', 'Vendido', 'Receita Atual', 'Objetivo', 'Receita Projetada'])
+        # Correção aplicada aqui: Exibindo apenas produtos, sem assessores
+        display_data_table(df, "Pipeline Seguros", ['Whole life', 'Vida', 'Plano Saude', 'Valor Parcela', 'Receita Projetada'])
     else:
         st.warning("⚠️ Sheet 'seguros' não encontrada.")
 
@@ -366,5 +366,4 @@ with tab4:
 st.markdown("---")
 st.markdown(
     "<p style='text-align: center; color: #FFD700; font-size: 12px;'>Dashboard Financeiro © 2026 | Vértiq Digital</p>",
-    unsafe_allow_html=True
-)
+    unsafe_allow_html=True)
