@@ -1,3 +1,4 @@
+
 import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
@@ -29,7 +30,52 @@ st.markdown("""
     [data-testid="stSidebar"] {
         background-color: #0d0d0d !important;
     }
-    
+    .range-card {
+        background: linear-gradient(135deg, #4a6fa5 0%, #2d5078 100%);
+        padding: 15px;
+        border-radius: 10px;
+        color: white;
+        margin: 5px 0;
+        border-left: 4px solid rgba(255,255,255,0.2);
+    }
+    .range-title {
+        font-weight: bold;
+        font-size: 14px;
+        margin-bottom: 5px;
+    }
+    .range-classification {
+        font-size: 12px;
+        opacity: 0.9;
+        margin-bottom: 8px;
+        font-weight: 500;
+    }
+    .range-info {
+        display: flex;
+        justify-content: space-between;
+        font-size: 12px;
+    }
+    .objetivo-card-dark {
+        background: linear-gradient(135deg, #3a5a8a 0%, #2a4570 100%);
+        padding: 25px;
+        border-radius: 12px;
+        color: white;
+        text-align: center;
+        margin-top: 30px;
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+    .progress-bar {
+        background: rgba(255,255,255,0.15);
+        height: 8px;
+        border-radius: 4px;
+        margin-top: 10px;
+        overflow: hidden;
+    }
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #4a9dd4 0%, #2a7db3 100%);
+        border-radius: 4px;
+    }
+
     [data-testid="stSidebarContent"] {
         background-color: #0d0d0d !important;
     }
@@ -55,6 +101,34 @@ st.markdown("""
         border-radius: 12px;
         border: 1px solid rgba(255, 215, 0, 0.3);
         box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    }
+    
+    /* Estilo para Cards de Informação (Missões) */
+    .info-card {
+        background: linear-gradient(135deg, #1a1a1a 0%, #252525 100%);
+        padding: 20px;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 215, 0, 0.5);
+        margin-bottom: 20px;
+        color: #E0E0E0;
+    }
+    
+    .info-card h3 {
+        color: #FFD700 !important;
+        margin-bottom: 15px;
+        border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+        padding-bottom: 10px;
+    }
+    
+    .info-card ul {
+        list-style-type: none;
+        padding-left: 0;
+    }
+    
+    .info-card li {
+        margin-bottom: 10px;
+        padding-left: 20px;
+        position: relative;
     }
     
     /* Estilo Moderno para Botões */
@@ -177,6 +251,7 @@ def safe_get_columns(df, column_names):
             existing_columns.append(found_col)
     return existing_columns
 
+# Função que formata os numeros em strings
 def display_data_table(df, title, column_names, max_rows=15):
     try:
         if df is None or df.empty:
@@ -190,11 +265,34 @@ def display_data_table(df, title, column_names, max_rows=15):
         df_filtered = df[valid_columns].copy()
         df_filtered = df_filtered.dropna(how='all').head(max_rows)
         
-        # Formatar colunas numéricas como moeda se parecerem valores financeiros
-        finance_keywords = ['receita', 'vendido', 'objetivo', 'valor', 'parcela', 'realizado', 'meta']
+        # COLUNAS QUE DEVEM SER FORMATADAS COMO R$
+        money_keywords = ['receita', 'vendido', 'objetivo', 'valor', 'parcela', 'realizado', 'meta', 'pipeline', 'whole life','pj 2', 'internacional', 'plano saude', 'câmbio', 'fundos', 'resultado', 'consorcios', 'seguros', 'maxima', 'prem', 'coe', 'pj2', 'rv', 'rf', 'objetivo', 'consórcio', 'total']
+        
+        # COLUNAS QUE DEVEM FICAR COMO NÚMEROS (NÃO MOEDA)
+        number_keywords = ['convertidos', 'reuniões', 'boletas ', 'elegivel' ]
+        
         for col in df_filtered.columns:
-            if any(key in col.lower() for key in finance_keywords):
-                df_filtered[col] = df_filtered[col].apply(format_currency)
+            col_lower = col.lower().strip()
+            
+            # Prioridade: Se é número puro, deixa como número
+            if any(key in col_lower for key in number_keywords):
+                try:
+                    df_filtered[col] = pd.to_numeric(
+                        df_filtered[col].astype(str).str.replace('R$', '').str.strip(), 
+                        errors='coerce'
+                    ).fillna(0).astype(int)  # Converte para int para ficar 0, 2, 1 (sem decimais)
+                except:
+                    pass
+            
+            # Se é coluna de dinheiro e possivel valor financeir, formata como R$
+            elif any(key in col_lower for key in money_keywords):
+                try:
+                    df_filtered[col] = pd.to_numeric(
+                        df_filtered[col].astype(str).str.replace('R$', '').str.replace('-', '0').str.strip(), 
+                        errors='coerce'
+                    ).fillna(0).apply(format_currency)
+                except:
+                    pass
         
         if df_filtered.empty:
             st.info(f"ℹ️ Nenhum dado encontrado para {title}")
@@ -202,6 +300,7 @@ def display_data_table(df, title, column_names, max_rows=15):
         st.dataframe(df_filtered, use_container_width=True, hide_index=True)
     except Exception as e:
         st.error(f"❌ Erro inesperado em {title}: {str(e)}")
+
 
 sheets = None
 if uploaded_file:
@@ -215,7 +314,7 @@ else:
 
 st.sidebar.markdown("---")
 
-tab1, tab2, tab3, tab4 = st.tabs(["Visão Geral", "Consórcios", "Seguros", "Advisor"])
+tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs(["Visão Geral", "Consórcios", "Seguros", "Advisor", "Time Comercial", "Comercial - Pipeline", "Captação Liq"])
 
 with tab1:
     st.markdown("## 📈 Visão Geral")
@@ -235,38 +334,59 @@ with tab1:
                 for col in ['Realizado', 'Meta']:
                     df_prod[col] = pd.to_numeric(df_prod[col].replace('-', 0).replace('R$ -   ', 0), errors='coerce').fillna(0)
                 
-                meta_row = df_vg[df_vg.iloc[:, 0] == 'Meta'].index
-                meta_total = 0
-                realizado_periodo = 0
-                if not meta_row.empty:
-                    m_idx = meta_row[0]
-                    meta_total = pd.to_numeric(df_vg.iloc[m_idx, 1], errors='coerce') or 0
-                    realizado_periodo = pd.to_numeric(df_vg.iloc[m_idx+5, 1], errors='coerce') or 0
-                
                 total_realizado = df_prod['Realizado'].sum()
+
+                # Extração de métricas específicas
+                # Forecast
+                forecast_row = df_vg[df_vg.iloc[:, 0].astype(str).str.contains('Forecast Atual', case=False, na=False)]
+                forecast_val = forecast_row.iloc[0, 1] if not forecast_row.empty else 0
                 
-                # MÉTRICAS PRINCIPAIS
+                # Realizado do período (12/01 a 16/01)
+                periodo_row = df_vg[df_vg.iloc[:, 0].astype(str).str.contains('Realizado de 12/01 até 16/01', case=False, na=False)]
+                realizado_periodo = periodo_row.iloc[0, 1] if not periodo_row.empty else 0
+                
+                # Média diaria realizada (semana/7)
+                media_dia = float(realizado_periodo) / 7 if realizado_periodo else 0
+                
+                # Média semanal por dias uteis
+                meta_dia_row = df_vg[df_vg.iloc[:, 0].astype(str).str.contains('Meta dia útil', case=False, na=False)]
+                meta_dia_util = meta_dia_row.iloc[0, 1] if not meta_dia_row.empty else 23809.52
+                
+                # Meta do mês
+                meta_rows = df_vg[df_vg.iloc[:, 0].astype(str).str.contains('Meta', case=False, na=False)]
+                meta_total = pd.to_numeric(meta_rows.iloc[1, 1], errors='coerce') if len(meta_rows) > 1 else 500000
+                
+                # Porcetagem da meta total atingida no mês
+                percent_meta = (total_realizado / meta_total * 100) if meta_total > 0 else 0
+
+                # Primeiros 4 cards
                 m1, m2, m3, m4 = st.columns(4)
                 with m1:
                     st.metric("Receita Total Realizada", format_currency(total_realizado))
                 with m2:
-                    st.metric("Meta Total do Mês", format_currency(meta_total))
+                    st.metric("Forecast", f"{float(forecast_val)*100:.1f}%" if isinstance(forecast_val, (int, float)) else str(forecast_val))
                 with m3:
-                    percent_meta = (total_realizado / meta_total * 100) if meta_total > 0 else 0
-                    st.metric("% da Meta Atingida", f"{percent_meta:.1f}%")
+                    st.metric("Média Feita no Dia", format_currency(media_dia))
                 with m4:
-                    st.metric("Realizado no Período", format_currency(realizado_periodo))
+                    st.metric("Média Semanal p/ Dia", format_currency(meta_dia_util))
+                
+                st.markdown("<br>", unsafe_allow_html=True)
+                
+                c1, c2, c3, c4 = st.columns([1, 2, 2, 1])
+                with c2:
+                    st.metric("% da Meta Atingida", f"{percent_meta:.1f}%")
+                with c3:
+                    st.metric("Meta Total", format_currency(meta_total))
                 
                 st.markdown("---")
                 
-                # APENAS GRÁFICO DE PIZZA (Conforme solicitado)
                 st.subheader("🎯 Concentração de Receita por Produto")
                 df_pizza = df_prod[df_prod['Realizado'] > 0]
                 
                 fig_pie = go.Figure(data=[go.Pie(
                     labels=df_pizza['Produto'],
                     values=df_pizza['Realizado'],
-                    marker=dict(colors=['#FFD700', '#FFC600', '#FFB600', '#FFA600', '#FF9600', '#FF8600', '#B8860B', '#DAA520'],
+                    marker=dict(colors=["#0008FF", '#FFC600', "#FF001E9A", "#09FF008C", '#FF9600', "#00FF1E9D", '#B8860B', "#2045DA"],
                                line=dict(color='#0d0d0d', width=2)),
                     textposition='inside',
                     textfont=dict(color='#000000', size=12, weight='bold'),
@@ -284,9 +404,8 @@ with tab1:
                 st.plotly_chart(fig_pie, use_container_width=True)
                 
                 st.markdown("---")
-                st.subheader("📋 Detalhamento de Receitas")
                 
-                # Formatar tabela para exibição
+                
                 df_prod_display = df_prod.copy()
                 df_prod_display['Realizado'] = df_prod_display['Realizado'].apply(format_currency)
                 df_prod_display['Meta'] = df_prod_display['Meta'].apply(format_currency)
@@ -329,7 +448,6 @@ with tab3:
         
         st.markdown("---")
         st.subheader("📊 Pipeline de Seguros")
-        # Correção aplicada aqui: Exibindo apenas produtos, sem assessores
         display_data_table(df, "Pipeline Seguros", ['Whole life', 'Vida', 'Plano Saude', 'Valor Parcela', 'Receita Projetada'])
     else:
         st.warning("⚠️ Sheet 'seguros' não encontrada.")
@@ -337,6 +455,8 @@ with tab3:
 with tab4:
     st.markdown("## 💼 Advisor")
     st.markdown("---")
+    st.markdown("---")
+
     if sheets:
         if 'advisor - geral' in sheets:
             df = sheets['advisor - geral']
@@ -349,21 +469,380 @@ with tab4:
             df_pipeline = safe_filter_by_column(df, 'Pipeline')
             display_data_table(df_pipeline, "Pipeline Advisor", ['Pipeline', 'Vendido', 'Receita Atual', 'Objetivo', 'Receita Projetada'])
         
-        if 'COE -Ouro' in sheets:
+        if 'COE - Ouro' in sheets:
             st.markdown("---")
             st.subheader("🏆 COE - Ouro")
-            df_ouro = sheets['COE -Ouro'].dropna(axis=1, how='all').dropna(how='all')
+            df_ouro = sheets['COE - Ouro'].dropna(axis=1, how='all').dropna(how='all')
             display_data_table(df_ouro, "COE Ouro", df_ouro.columns.tolist())
         
-        if 'COE - Prata' in sheets:
+        if 'PE - Prata' in sheets:
             st.markdown("---")
-            st.subheader("🥈 COE - Prata")
-            df_prata = sheets['COE - Prata'].dropna(axis=1, how='all').dropna(how='all')
-            display_data_table(df_prata, "COE Prata", df_prata.columns.tolist())
+            st.subheader("🥈 PE - Prata")
+            df_prata = sheets['PE - Prata'].dropna(axis=1, how='all').dropna(how='all')
+            display_data_table(df_prata, "PE Prata", df_prata.columns.tolist())
+
+
     else:
         st.warning("⚠️ Nenhum arquivo carregado.")
 
-st.markdown("---")
+    col_m1, col_m2 = st.columns(2)
+    
+    with col_m1:
+        st.markdown("""
+        <div class="info-card">
+            <h3> Missões 1.0</h3>
+            <ul>
+                <li><b>Renda Variável:</b> Vol. mín. R$ 250k (Corretagem Bovespa)</li>
+                <li><b>Internacional:</b> Remessa mín. USD 30k (Conta Global)</li>
+                <li><b>COE:</b> Alocar mín. R$ 100k (Prateleira Janeiro)</li>
+                <li style="color: #FFD700;"><b>Premiação:</b> Até R$ 26.000,00 adicionais</li>
+            </ul>
+        </div>
+        """, unsafe_allow_html=True)
+        
+    with col_m2:
+        st.markdown("""
+        <div class="info-card">
+            <h3> Missão 2.0</h3>
+            <ul>
+                <li><b>Renda Fixa:</b> Vol. R$ 200k (Prêmio R$ 1k) | R$ 300k (Prêmio R$ 2k)</li>
+                <li><b>Fundos Fechados:</b> R$ 300k Balcão / 400k Listados (Prêmio R$ 1k)</li>
+                <li><b>Conta PJ:</b> Aporte 350k-500k (Prêmio R$ 1k) | > 600k (Prêmio R$ 2k)</li>
+                <li style="color: #FFD700;"><b>Vencimento RF:</b> A partir de Jan/2029</li>
+            </ul>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.markdown("---")
+
+    if 'missões' in sheets:
+        df = sheets['missões']
+        st.subheader("Missões 1.0")
+        df_missoes1 = safe_filter_by_column(df, 'Assessor')
+        display_data_table(df_missoes1, "Missões", ['Assessor', 'Status', 'Cod Matriz', 'Nome Matriz', 'Núcleo', 'Elegivel RV', 'Elegivel Internacional', 'Elegivel COE', 'Premiação máxima'])
+            
+    st.markdown("---")
+
+    if 'missões 2.0' in sheets:
+        df = sheets['missões 2.0']
+        st.subheader("Missões 2.0")
+        df_missoes2 = safe_filter_by_column(df, 'Assessor')
+        display_data_table(df_missoes2, "Missões 2.0", ['Assessor', 'Status', 'Cod Matriz', 'Nome Matriz', 'Núcleo', 'Elegivel RV', 'Elegivel Fundos', 'Elegivel PJ', 'Prem Max'])
+            
+    st.markdown("---")
+
+    if 'banco master' in sheets:
+        df = sheets['banco master']
+        st.subheader("Banco Master")
+        df_master = safe_filter_by_column(df, 'Assessores')
+        display_data_table(df_master, "Banco Master", ['Assessore', 'Volume FGC', 'Volume Convertido'])
+
+with tab5:
+
+    # 1. Verificar se a aba existe (usando uma busca mais flexível para o nome da aba)
+    assessor_sheet_name = next((s for s in sheets.keys() if s.lower().strip() == 'assessores'), None)
+    
+    if assessor_sheet_name:
+        df_assessor_raw = sheets[assessor_sheet_name]
+        st.markdown("## 👥 Análise por Assessor")
+        st.markdown("---")
+        
+        # 2. Encontrar a coluna do Assessor (flexível)
+        assessor_col = find_column(df_assessor_raw, 'Assessores')
+        
+        if assessor_col:
+            # 3. Criar a lista para o filtro
+            lista_assessores = ["Todos"] + sorted([str(x) for x in df_assessor_raw[assessor_col].unique() if x])
+            assessor_selecionado = st.selectbox("🔍 Selecione um Assessor para filtrar:", lista_assessores, key="filter_assessor_tab5")
+            
+            # 4. Filtrar os dados
+            if assessor_selecionado != "Todos":
+                df_exibir = df_assessor_raw[df_assessor_raw[assessor_col] == assessor_selecionado]
+                st.subheader(f"📊 Resultados Detalhados: {assessor_selecionado}")
+            else:
+                df_exibir = df_assessor_raw
+                st.subheader("Visão Geral - Todos os Assessores")
+
+            df_formatado = df_exibir.copy()
+            
+            # Identifica a coluna de Forecast (ajuste o nome se na planilha for diferente)
+            col_forecast = next((c for c in df_formatado.columns if 'forecast' in c.lower()), None)
+            
+            if col_forecast:
+                # Converte para numérico (caso esteja como texto) e formata como porcentagem
+                df_formatado[col_forecast] = pd.to_numeric(df_formatado[col_forecast], errors='coerce')
+                # Opção A: Formatar como string para exibição direta
+                df_formatado[col_forecast] = df_formatado[col_forecast].apply(lambda x: f"{x:.0%}" if pd.notnull(x) else "-")
+
+            # Agora passamos o df_formatado para a sua função
+            display_data_table(df_formatado, "Tabela_Assessores", df_formatado.columns.tolist())
+            
+        else:
+            st.warning("⚠️ Não encontramos uma coluna chamada 'Assessor' na aba de dados.")
+            st.info("Colunas disponíveis: " + ", ".join(df_assessor_raw.columns))
+    else:
+        st.error("❌ A aba 'assessor' não foi encontrada no arquivo carregado.")
+        st.info(f"Abas disponíveis: {', '.join(sheets.keys())}")
+
+    st.markdown("## 💼 SDR")
+
+    # Primeira tabela - SDR (aba "SDR")
+    if 'SDR' in sheets:
+        df_sdr_raw = sheets['SDR']
+        st.subheader("SDR - Parcial da Semana")
+        # Na sua planilha, a coluna na aba 'SDR' chama-se 'SDRS'
+        col_name = 'SDRS' if 'SDRS' in df_sdr_raw.columns else 'SDR'
+        df_sdr = df_sdr_raw[df_sdr_raw[col_name].notna() & (df_sdr_raw[col_name] != '')].copy()
+        cols_to_show = [col_name, 'Agendadas', 'Realizadas', 'Convertidas']
+        display_data_table(df_sdr, "SDR_Semanal", cols_to_show)
+        
+        st.divider()
+
+    # Segunda tabela - SDRS (aba "SDR - Semanal")
+    if 'SDR - Semanal' in sheets:
+        df_sdrs_raw = sheets['SDR - Semanal']
+        st.subheader("SDR - Convertidos no Mês (Janeiro)")
+        # Na sua planilha, a coluna na aba 'SDR - Semanal' chama-se 'SDR'
+        col_name = 'SDR' if 'SDR' in df_sdrs_raw.columns else 'SDRS'
+        df_sdrs = df_sdrs_raw[df_sdrs_raw[col_name].notna() & (df_sdrs_raw[col_name] != '')].copy()
+        cols_to_show = [col_name, 'Dez', 'S1', 'S2', 'S3', 'S4']
+        display_data_table(df_sdrs, "SDR_Mensal", cols_to_show)
+
+
+
+with tab6:
+    st.markdown("## 🚀 Assessores - Pipeline")
+    st.markdown("---")
+    if sheets and 'Pipeline - Assessor' in sheets:
+        df_pipe_assessor = sheets['Pipeline - Assessor']
+        assessor_col2 = find_column(df_pipe_assessor, 'Assessor')
+        if assessor_col2:
+            lista_assessores2 = ["Todos"] + sorted(df_pipe_assessor[assessor_col2].unique().tolist())
+            assessor_selecionado_pipe = st.selectbox("🔍 Selecione um Assessor para análise detalhada:", lista_assessores2)
+            
+            if assessor_selecionado_pipe != "Todos":
+                df_filtrado2 = df_pipe_assessor[df_pipe_assessor[assessor_col2] == assessor_selecionado_pipe]
+                st.subheader(f"📊 Resultados: {assessor_selecionado_pipe}")
+                display_data_table(df_filtrado2, "assessor", df_filtrado2.columns.tolist())
+            else:
+                st.subheader("Visão Geral - Todos os Assessores")
+                display_data_table(df_pipe_assessor, "assessor", df_pipe_assessor.columns.tolist())
+with tab7:
+    st.markdown("## 💰 Captação Líquida")
+    st.markdown("---")
+    
+    if sheets and 'captação liq' in sheets:
+        df_captacao = sheets['captação liq'].copy()
+        df_captacao.columns = df_captacao.columns.str.strip()
+        
+        # Remove linhas vazias no início
+        df_captacao = df_captacao[df_captacao.iloc[:, 0].notna()].reset_index(drop=True)
+        
+        try:
+            # SEÇÃO 1: RANGES E OBJETIVOS COM CLASSIFICAÇÃO
+            st.subheader("📊 Ranges de Captação Líquida e Objetivos")
+            
+            # Mapeamento de ranges para classificações
+            range_classificacao = {
+                '0 - 5 MM': 'Sales Hunter',
+                '10 - 40 MM': 'AAI Pleno',
+                'Acima de 40 MM': 'AAI Senior'
+            }
+            
+            # Pega ranges únicos e seus objetivos
+            ranges_dict = {}
+            for idx, row in df_captacao.iterrows():
+                range_col = find_column(df_captacao, 'Range')
+                obj_col = find_column(df_captacao, ['Objetivo Cap', 'Objetivo Cap Liq'])
+                
+                if pd.notna(row[range_col]) and pd.notna(row[obj_col]):
+                    range_val = str(row[range_col]).strip()
+                    
+                    if range_val not in ranges_dict and range_val != '':
+                        try:
+                            obj_val = float(
+                                str(row[obj_col]).replace('R$', '').replace('.', '').replace(',', '.').strip()
+                            )
+                            ranges_dict[range_val] = obj_val
+                        except:
+                            pass
+            
+            cols = st.columns(len(ranges_dict))
+            for idx, (range_name, objetivo) in enumerate(ranges_dict.items()):
+                classificacao = range_classificacao.get(range_name, '')
+                with cols[idx]:
+                    st.markdown(f"""
+                    <div class="range-card">
+                        <div class="range-title">{range_name}</div>
+                        <div class="range-classification">{classificacao}</div>
+                        <div class="range-info">
+                            <span>Objetivo:</span>
+                            <span style="font-weight: bold;">{format_currency(objetivo)}</span>
+                        </div>
+                    </div>
+                    """, unsafe_allow_html=True)
+            
+            st.markdown("---")
+            
+            # SEÇÃO 2: FILTRO E TABELA
+            st.subheader("📋 Tabela de Captação por Assessor")
+            
+            # Encontra colunas reais na planilha
+            col_assessor = find_column(df_captacao, 'Assessor')
+            col_posicao = find_column(df_captacao, 'Posição')
+            col_range = find_column(df_captacao, 'Range')
+            col_obj = find_column(df_captacao, ['Objetivo Cap', 'Objetivo Cap Liq'])
+            col_capt_liq = find_column(df_captacao, ['Captação Líquida', 'Captacao liquida'])
+            col_cap_obj = find_column(df_captacao, ['Cap x Objetivo', 'Cap x Objetivo'])
+            col_ativacoes = find_column(df_captacao, 'Ativações')
+            col_habilitacoes = find_column(df_captacao, 'Habilitações')
+            
+            colunas_encontradas = [col_assessor, col_obj, col_capt_liq, col_cap_obj, col_ativacoes, col_habilitacoes]
+            colunas_encontradas = [c for c in colunas_encontradas if c is not None]
+            
+            # Remove a linha de totais
+            df_display = df_captacao[df_captacao[col_assessor].notna()].copy()
+            df_display = df_display[~df_display[col_assessor].astype(str).str.strip().isin(['', 'nan'])].copy()
+            
+            # Remove última linha se for linha de totais
+            if len(df_display) > 0 and df_display.iloc[-1][col_assessor] == '':
+                df_display = df_display[:-1]
+            
+            # Filtro de assessores
+            assessores_list = df_display[col_assessor].unique().tolist()
+            assessores_list = ['Todos'] + [a for a in assessores_list if str(a).strip() != '']
+            
+            assessor_selecionado = st.selectbox(
+                "🔍 Filtrar por Assessor:",
+                assessores_list,
+                key="assessor_filter_captacao"
+            )
+            
+            # Aplica filtro
+            if assessor_selecionado != 'Todos':
+                df_display = df_display[df_display[col_assessor] == assessor_selecionado].copy()
+            
+            # Prepara dataframe para exibição
+            df_display_final = df_display[colunas_encontradas].copy()
+            
+            # Formata colunas
+            if col_obj:
+                df_display_final[col_obj] = pd.to_numeric(
+                    df_display_final[col_obj].astype(str).str.replace('R$', '').str.replace('.', '').str.replace(',', '.'),
+                    errors='coerce'
+                ).fillna(0).apply(format_currency)
+            
+            if col_capt_liq:
+                df_display_final[col_capt_liq] = pd.to_numeric(
+                    df_display_final[col_capt_liq].astype(str).str.replace('R$', '').str.replace('.', '').str.replace(',', '.'),
+                    errors='coerce'
+                ).fillna(0).apply(format_currency)
+            
+            if col_cap_obj:
+                df_display_final[col_cap_obj] = df_display_final[col_cap_obj].apply(
+                    lambda x: f"{float(str(x).replace('%', '').strip())*100:.0f}%" if pd.notna(x) and str(x).strip() != '' else "0%"
+                )
+            
+            # Renomeia colunas
+            rename_dict = {
+                col_obj: 'Obj. Captação',
+                col_capt_liq: 'Captação Líquida',
+                col_cap_obj: 'Cap. x Obj.',
+                col_ativacoes: 'Ativações',
+                col_habilitacoes: 'Habilitações'
+            }
+            df_display_final = df_display_final.rename(columns=rename_dict)
+            
+            st.dataframe(df_display_final, use_container_width=True, hide_index=True)
+            
+            st.markdown("---")
+            
+            # SEÇÃO 3: CARD DE OBJETIVO TOTAL - PUXANDO DA PLANILHA
+            st.subheader("🎯 Resumo Geral da Captação")
+            
+            # Encontra a linha de totais (última linha preenchida)
+            df_totais = df_captacao.iloc[-2:].copy()
+            
+            # Pega valores da linha de totais
+            total_row = df_captacao[df_captacao[col_assessor].astype(str).str.strip().isin(['', 'nan', 'NaN'])].iloc[0] if len(df_captacao[df_captacao[col_assessor].astype(str).str.strip().isin(['', 'nan', 'NaN'])]) > 0 else df_captacao.iloc[-1]
+            
+            # Converte valores
+            objetivo_total = float(total_row['Objetivo Cap Liq']) if pd.notna(total_row['Objetivo Cap Liq']) else 16000000
+            captacao_total = float(total_row['Captação Líquida']) if pd.notna(total_row['Captação Líquida']) else 4653174
+            percentual_objetivo = float(total_row['Cap x Objetivo']) * 100 if pd.notna(total_row['Cap x Objetivo']) else 29
+            
+            # Soma ativações e habilitações
+            ativacoes_total = pd.to_numeric(df_captacao[col_ativacoes], errors='coerce').sum()
+            habilitacoes_total = pd.to_numeric(df_captacao[col_habilitacoes], errors='coerce').sum()
+            
+            # Cards com cores mais escuras e menos chamativas
+            col1, col2, col3 = st.columns([1, 1, 1])
+            
+            with col1:
+                st.markdown(f"""
+                <div class="objetivo-card-dark">
+                    <div style="font-size: 14px; opacity: 0.95;">Objetivo Total</div>
+                    <div style="font-size: 32px; font-weight: bold; margin-top: 10px;">
+                        {format_currency(objetivo_total)}
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
+            
+            with col2:
+                st.markdown(f"""
+                <div class="objetivo-card-dark">
+                    <div style="font-size: 14px; opacity: 0.95;">Captação Realizada</div>
+                    <div style="font-size: 32px; font-weight: bold; margin-top: 10px;">
+                        {format_currency(captacao_total)}
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
+            
+            with col3:
+                st.markdown(f"""
+                <div class="objetivo-card-dark">
+                    <div style="font-size: 14px; opacity: 0.95;">% do Objetivo</div>
+                    <div style="font-size: 32px; font-weight: bold; margin-top: 10px;">
+                        {percentual_objetivo:.1f}%
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: {min(percentual_objetivo, 100)}%;"></div>
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
+            
+            # Métricas adicionais
+            st.markdown("### 📈 Métricas Adicionais")
+            col_a, col_b, col_c, col_d = st.columns(4)
+            
+            with col_a:
+                st.metric("Total de Ativações", f"{int(ativacoes_total)}")
+            
+            with col_b:
+                st.metric("Total de Habilitações", f"{int(habilitacoes_total)}")
+            
+            with col_c:
+                assessores_positivos = len(df_captacao[
+                    pd.to_numeric(
+                        df_captacao[col_capt_liq].astype(str).str.replace('R$', '').str.replace('.', '').str.replace(',', '.'),
+                        errors='coerce'
+                    ) > 0
+                ])
+                st.metric("Assessores com Captação Positiva", f"{assessores_positivos}")
+            
+            with col_d:
+                media_captacao = captacao_total / max(len(df_captacao) - 1, 1)
+                st.metric("Média de Captação", format_currency(media_captacao))
+            
+            st.markdown("---")
+            st.markdown("*Dashboard atualizado dinamicamente a partir da planilha | Vértiq Investimentos*")
+            
+        except Exception as e:
+            st.error(f"❌ Erro ao processar dados de Captação Líquida: {str(e)}")
+    else:
+        st.warning("⚠️ Aba 'captação liq' não encontrada na planilha!")
+
+
 st.markdown(
     "<p style='text-align: center; color: #FFD700; font-size: 12px;'>Dashboard Financeiro © 2026 | Vértiq Digital</p>",
     unsafe_allow_html=True)
