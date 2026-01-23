@@ -17,174 +17,305 @@ st.set_page_config(
 
 # CSS customizado - Refinado
 st.markdown("""
-    <style>
+  <style>  
     * {
-        margin: 0;
-        padding: 0;
-    }
-    
-    [data-testid="stAppViewContainer"] {
-        background-color: #0d0d0d !important;
-    }
-    
-    [data-testid="stSidebar"] {
-        background-color: #0d0d0d !important;
-    }
-    .range-card {
-        background: linear-gradient(135deg, #4a6fa5 0%, #2d5078 100%);
-        padding: 15px;
-        border-radius: 10px;
-        color: white;
-        margin: 5px 0;
-        border-left: 4px solid rgba(255,255,255,0.2);
-    }
-    .range-title {
-        font-weight: bold;
-        font-size: 14px;
-        margin-bottom: 5px;
-    }
-    .range-classification {
-        font-size: 12px;
-        opacity: 0.9;
-        margin-bottom: 8px;
-        font-weight: 500;
-    }
-    .range-info {
-        display: flex;
-        justify-content: space-between;
-        font-size: 12px;
-    }
-    .objetivo-card-dark {
-        background: linear-gradient(135deg, #3a5a8a 0%, #2a4570 100%);
-        padding: 25px;
-        border-radius: 12px;
-        color: white;
-        text-align: center;
-        margin-top: 30px;
-        border: 1px solid rgba(255,255,255,0.1);
-    }
-    .progress-bar {
-        background: rgba(255,255,255,0.15);
-        height: 8px;
-        border-radius: 4px;
-        margin-top: 10px;
-        overflow: hidden;
-    }
-    .progress-fill {
-        height: 100%;
-        background: linear-gradient(90deg, #4a9dd4 0%, #2a7db3 100%);
-        border-radius: 4px;
-    }
+    margin: 0;
+    padding: 0;
+}
 
-    [data-testid="stSidebarContent"] {
-        background-color: #0d0d0d !important;
-    }
-    
-    [data-testid="stSidebar"] label,
-    [data-testid="stSidebar"] p,
-    [data-testid="stSidebar"] span,
-    [data-testid="stSidebar"] div {
-        color: #FFD700 !important;
-    }
-    
-    h1, h2, h3, h4, h5, h6 {
-        color: #FFD700 !important;
-    }
-    
-    [data-testid="stDataFrame"] {
-        background-color: #1a1a1a !important;
-    }
-    
-    .stMetric {
-        background: linear-gradient(135deg, #1a1a1a 0%, #252525 100%);
-        padding: 15px;
-        border-radius: 12px;
-        border: 1px solid rgba(255, 215, 0, 0.3);
-        box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-    }
-    
-    /* Estilo para Cards de Informação (Missões) */
-    .info-card {
-        background: linear-gradient(135deg, #1a1a1a 0%, #252525 100%);
-        padding: 20px;
-        border-radius: 12px;
-        border: 1px solid rgba(255, 215, 0, 0.5);
-        margin-bottom: 20px;
-        color: #E0E0E0;
-    }
-    
-    .info-card h3 {
-        color: #FFD700 !important;
-        margin-bottom: 15px;
-        border-bottom: 1px solid rgba(255, 215, 0, 0.3);
-        padding-bottom: 10px;
-    }
-    
-    .info-card ul {
-        list-style-type: none;
-        padding-left: 0;
-    }
-    
-    .info-card li {
-        margin-bottom: 10px;
-        padding-left: 20px;
-        position: relative;
-    }
-    
-    /* Estilo Moderno para Botões */
-    .stButton > button {
-        background: linear-gradient(135deg, #FFD700 0%, #B8860B 100%) !important;
-        color: #0d0d0d !important;
-        border: none !important;
-        padding: 0.6rem 2rem !important;
-        border-radius: 50px !important;
-        font-weight: 700 !important;
-        text-transform: uppercase !important;
-        letter-spacing: 1px !important;
-        transition: all 0.3s ease !important;
-        box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2) !important;
-        width: 100% !important;
-    }
-    
-    .stButton > button:hover {
-        transform: translateY(-2px) !important;
-        box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4) !important;
-        color: #000 !important;
-    }
-    
-    .stTabs [data-baseweb="tab-list"] {
-        gap: 15px;
-        background-color: transparent !important;
-    }
-    
-    .stTabs [data-baseweb="tab"] {
-        background-color: #1a1a1a !important;
-        color: #FFD700 !important;
-        border: 1px solid rgba(255, 215, 0, 0.3) !important;
-        border-radius: 8px 8px 0 0 !important;
-        padding: 10px 25px !important;
-        font-weight: 600 !important;
-    }
-    
-    .stTabs [aria-selected="true"] {
-        background-color: #FFD700 !important;
-        color: #0d0d0d !important;
-        border: 1px solid #FFD700 !important;
-    }
-    
-    body, p, span, div {
-        color: #E0E0E0 !important;
-    }
-    
-    hr {
-        border-color: rgba(255, 215, 0, 0.3) !important;
-    }
-    
-    /* Estilização de Dataframe */
-    [data-testid="stTable"] {
-        color: #E0E0E0 !important;
-    }
-    </style>
+[data-testid="stAppViewContainer"] {
+    background-color: #0d0d0d !important;
+}
+
+[data-testid="stSidebar"] {
+    background-color: #0d0d0d !important;
+}
+
+/* ===== CONTAINER PARA CARDS ALINHADOS ===== */
+.metrics-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+    width: 100%;
+}
+
+/* ===== CARDS PRINCIPAIS (Receita, Forecast, Pace) ===== */
+.metric-card {
+    background: linear-gradient(135deg, #1a1a1a 0%, #252525 100%);
+    padding: 25px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 215, 0, 0.4);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+    color: #E0E0E0;
+    backdrop-filter: blur(10px);
+}
+
+.metric-card-title {
+    font-size: 13px;
+    color: #FFD700;
+    font-weight: 600;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    opacity: 0.9;
+}
+
+.metric-card-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: #E0E0E0;
+    line-height: 1.3;
+    margin-bottom: 5px;
+}
+
+.metric-card:hover {
+    border-color: rgba(255, 215, 0, 0.7);
+    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.15);
+    transform: translateY(-2px);
+    transition: all 0.3s ease;
+}
+
+/* ===== CARDS SECUNDÁRIOS (% Meta, Meta Total) ===== */
+.secondary-metrics-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.secondary-metric-card {
+    background: linear-gradient(135deg, #2a4570 0%, #1a3050 100%);
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+}
+
+.secondary-metric-card-title {
+    font-size: 12px;
+    color: #FFD700;
+    font-weight: 600;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    opacity: 0.85;
+}
+
+.secondary-metric-card-value {
+    font-size: 26px;
+    font-weight: 700;
+    color: #E0E0E0;
+}
+
+.secondary-metric-card:hover {
+    border-color: rgba(255, 215, 0, 0.6);
+    box-shadow: 0 5px 15px rgba(255, 215, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+/* ===== RANGE CARDS ===== */
+.range-card {
+    background: linear-gradient(135deg, #4a6fa5 0%, #2d5078 100%);
+    padding: 15px;
+    border-radius: 10px;
+    color: white;
+    margin: 5px 0;
+    border-left: 4px solid rgba(255, 215, 0, 0.4);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(5px);
+}
+
+.range-title {
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 5px;
+    color: #FFD700;
+}
+
+.range-classification {
+    font-size: 12px;
+    opacity: 0.9;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #E0E0E0;
+}
+
+.range-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #E0E0E0;
+}
+
+/* ===== OBJETIVO CARD ===== */
+.objetivo-card-dark {
+    background: linear-gradient(135deg, #3a5a8a 0%, #2a4570 100%);
+    padding: 25px;
+    border-radius: 12px;
+    color: white;
+    text-align: center;
+    margin-top: 30px;
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+}
+
+.objetivo-card-dark h3 {
+    color: #FFD700 !important;
+    margin-bottom: 15px;
+}
+
+/* ===== PROGRESS BAR ===== */
+.progress-bar {
+    background: rgba(255, 255, 255, 0.1);
+    height: 8px;
+    border-radius: 4px;
+    margin-top: 10px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 215, 0, 0.2);
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4a9dd4 0%, #2a7db3 100%);
+    border-radius: 4px;
+    box-shadow: 0 0 10px rgba(74, 157, 212, 0.5);
+}
+
+/* ===== SIDEBAR ===== */
+[data-testid="stSidebarContent"] {
+    background-color: #0d0d0d !important;
+}
+
+[data-testid="stSidebar"] label,
+[data-testid="stSidebar"] p,
+[data-testid="stSidebar"] span,
+[data-testid="stSidebar"] div {
+    color: #FFD700 !important;
+}
+
+/* ===== HEADINGS ===== */
+h1, h2, h3, h4, h5, h6 {
+    color: #FFD700 !important;
+}
+
+/* ===== DATAFRAME & TABLE ===== */
+[data-testid="stDataFrame"],
+[data-testid="stTable"] {
+    background-color: #1a1a1a !important;
+    color: #E0E0E0 !important;
+}
+
+/* ===== METRIC CONTAINER ===== */
+[data-testid="metric-container"] {
+    background: linear-gradient(135deg, #1a1a1a 0%, #252525 100%) !important;
+    padding: 15px !important;
+    border-radius: 12px !important;
+    border: 1px solid rgba(255, 215, 0, 0.3) !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5) !important;
+    backdrop-filter: blur(10px) !important;
+}
+
+[data-testid="metric-container"] > div:nth-child(1) {
+    font-size: 14px;
+    color: #FFD700 !important;
+    font-weight: 600;
+}
+
+[data-testid="metric-container"] > div:nth-child(2) {
+    font-size: 24px !important;
+    font-weight: bold;
+    color: #E0E0E0 !important;
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    text-align: left !important;
+    padding: 10px 0;
+    line-height: 1.4;
+}
+
+/* ===== INFO CARDS (Missões) ===== */
+.info-card {
+    background: linear-gradient(135deg, #1a1a1a 0%, #252525 100%);
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 215, 0, 0.5);
+    margin-bottom: 20px;
+    color: #E0E0E0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+}
+
+.info-card h3 {
+    color: #FFD700 !important;
+    margin-bottom: 15px;
+    border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+    padding-bottom: 10px;
+}
+
+.info-card ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.info-card li {
+    margin-bottom: 10px;
+    padding-left: 20px;
+    position: relative;
+}
+
+/* ===== BUTTONS ===== */
+.stButton > button {
+    background: linear-gradient(135deg, #FFD700 0%, #B8860B 100%) !important;
+    color: #0d0d0d !important;
+    border: none !important;
+    padding: 0.6rem 2rem !important;
+    border-radius: 50px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2) !important;
+    width: 100% !important;
+}
+
+.stButton > button:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4) !important;
+    color: #000 !important;
+}
+
+/* ===== TABS ===== */
+.stTabs [data-baseweb="tab-list"] {
+    gap: 15px;
+    background-color: transparent !important;
+}
+
+.stTabs [data-baseweb="tab"] {
+    background-color: #1a1a1a !important;
+    color: #FFD700 !important;
+    border: 1px solid rgba(255, 215, 0, 0.3) !important;
+    border-radius: 8px 8px 0 0 !important;
+    padding: 10px 25px !important;
+    font-weight: 600 !important;
+}
+
+.stTabs [aria-selected="true"] {
+    background-color: #FFD700 !important;
+    color: #0d0d0d !important;
+    border: 1px solid #FFD700 !important;
+}
+
+/* ===== GENERAL TEXT ===== */
+body, p, span, div {
+    color: #E0E0E0 !important;
+}
+
+hr {
+    border-color: rgba(255, 215, 0, 0.3) !important;
+}
+<style>
     """, unsafe_allow_html=True)
 
 def format_currency(val):
@@ -336,15 +467,19 @@ with tab1:
                 
                 total_realizado = df_prod['Realizado'].sum()
 
-                # Extração de métricas específicas
-                # Forecast
-                forecast_row = df_vg[df_vg.iloc[:, 0].astype(str).str.contains('Forecast Atual', case=False, na=False)]
-                forecast_val = forecast_row.iloc[0, 1] if not forecast_row.empty else 0
-                
+                # Pega o valor (que internamente é 0.57598050)
+                forecast_rows = df_vg[df_vg.iloc[:, 0].astype(str).str.contains('Forecast', case=False, na=False)]
+                forecast_val = forecast_rows.iloc[-1, 1] if not forecast_rows.empty else 0
+
+                # Converte para número real (575980.50)
+                forecast_val = float(forecast_val) * 1000000
+
+
                 # Realizado do período (12/01 a 16/01)
                 periodo_row = df_vg[df_vg.iloc[:, 0].astype(str).str.contains('Realizado de 12/01 até 16/01', case=False, na=False)]
                 realizado_periodo = periodo_row.iloc[0, 1] if not periodo_row.empty else 0
                 
+            
                 # Média diaria realizada (semana/7)
                 media_dia = float(realizado_periodo) / 7 if realizado_periodo else 0
                 
@@ -364,11 +499,10 @@ with tab1:
                 with m1:
                     st.metric("Receita Total Realizada", format_currency(total_realizado))
                 with m2:
-                    st.metric("Forecast", f"{float(forecast_val)*100:.1f}%" if isinstance(forecast_val, (int, float)) else str(forecast_val))
-                with m3:
-                    st.metric("Média Feita no Dia", format_currency(media_dia))
+                    st.metric("Forecast", format_currency(forecast_val))
+               
                 with m4:
-                    st.metric("Média Semanal p/ Dia", format_currency(meta_dia_util))
+                    st.metric("Pace", format_currency(meta_dia_util))
                 
                 st.markdown("<br>", unsafe_allow_html=True)
                 
@@ -767,9 +901,9 @@ with tab7:
             total_row = df_captacao[df_captacao[col_assessor].astype(str).str.strip().isin(['', 'nan', 'NaN'])].iloc[0] if len(df_captacao[df_captacao[col_assessor].astype(str).str.strip().isin(['', 'nan', 'NaN'])]) > 0 else df_captacao.iloc[-1]
             
             # Converte valores
-            objetivo_total = float(total_row['Objetivo Cap Liq']) if pd.notna(total_row['Objetivo Cap Liq']) else 16000000
-            captacao_total = float(total_row['Captação Líquida']) if pd.notna(total_row['Captação Líquida']) else 4653174
-            percentual_objetivo = float(total_row['Cap x Objetivo']) * 100 if pd.notna(total_row['Cap x Objetivo']) else 29
+            objetivo_total = float(str(total_row['Objetivo Cap Liq']).replace("R$", "").replace(".", "").replace(",", ".")) if pd.notna(total_row['Objetivo Cap Liq']) else 16000000
+            captacao_total = float(str(total_row['Captação Líquida']).replace("R$", "").replace(".", "").replace(",", ".")) if pd.notna(total_row['Captação Líquida']) else 4653174
+            percentual_objetivo = float(str(total_row['Cap x Objetivo']).replace("%", "").strip()) if pd.notna(total_row['Cap x Objetivo']) else 29
             
             # Soma ativações e habilitações
             ativacoes_total = pd.to_numeric(df_captacao[col_ativacoes], errors='coerce').sum()
@@ -831,7 +965,9 @@ with tab7:
                 st.metric("Assessores com Captação Positiva", f"{assessores_positivos}")
             
             with col_d:
-                media_captacao = captacao_total / max(len(df_captacao) - 1, 1)
+                # Calcula corretamente apenas com assessores válidos, sem incluir linhas vazias
+                assessores_validos = df_display[df_display[col_assessor].notna()].copy()
+                media_captacao = captacao_total / max(len(assessores_validos), 1)
                 st.metric("Média de Captação", format_currency(media_captacao))
             
             st.markdown("---")
