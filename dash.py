@@ -691,9 +691,9 @@ with tab7:
             col_assessor = find_column(df_captacao, 'Assessor')
             col_posicao = find_column(df_captacao, 'Posição')
             col_range = find_column(df_captacao, 'Range')
-            col_obj = find_column(df_captacao, ['Objetivo Cap', 'Objetivo Cap Liq'])
-            col_capt_liq = find_column(df_captacao, ['Captação Líquida', 'Captacao liquida'])
-            col_cap_obj = find_column(df_captacao, ['Cap x Objetivo', 'Cap x Objetivo'])
+            col_obj = find_column(df_captacao, ['Objetivo Cap Liq'])
+            col_capt_liq = find_column(df_captacao, ['Captação Líquida'])
+            col_cap_obj = find_column(df_captacao, ['Cap x Objetivo'])
             col_ativacoes = find_column(df_captacao, 'Ativações')
             col_habilitacoes = find_column(df_captacao, 'Habilitações')
             
