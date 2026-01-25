@@ -529,7 +529,7 @@ with tab1:
                 
                 # Média semanal por dias uteis
                 meta_dia_row = df_vg[df_vg.iloc[:, 0].astype(str).str.contains('Meta dia útil', case=False, na=False)]
-                meta_dia_util = meta_dia_row.iloc[0, 1] if not meta_dia_row.empty else 23809.52
+                meta_dia_util = meta_dia_row.iloc[0, 1] if not meta_dia_row.empty else '115%'
                 
                 # Meta do mês
                 meta_rows = df_vg[df_vg.iloc[:, 0].astype(str).str.contains('Meta', case=False, na=False)]
@@ -789,13 +789,20 @@ with tab5:
             df_formatado = df_exibir.copy()
             
             # Identifica a coluna de Forecast (ajuste o nome se na planilha for diferente)
+                        # Identifica as colunas de Forecast e Pace
             col_forecast = next((c for c in df_formatado.columns if 'forecast' in c.lower()), None)
+            col_pace = next((c for c in df_formatado.columns if 'pace' in c.lower()), None)
             
             if col_forecast:
-                # Converte para numérico (caso esteja como texto) e formata como porcentagem
+                # Converte para numérico e formata como porcentagem
                 df_formatado[col_forecast] = pd.to_numeric(df_formatado[col_forecast], errors='coerce')
-                # Opção A: Formatar como string para exibição direta
                 df_formatado[col_forecast] = df_formatado[col_forecast].apply(lambda x: f"{x:.0%}" if pd.notnull(x) else "-")
+
+            if col_pace:
+                # Converte para numérico e formata como porcentagem (com 1 casa decimal)
+                df_formatado[col_pace] = pd.to_numeric(df_formatado[col_pace], errors='coerce')
+                df_formatado[col_pace] = df_formatado[col_pace].apply(lambda x: f"{x:.1%}" if pd.notnull(x) else "-")
+
 
             # Agora passamos o df_formatado para a sua função
             display_data_table(df_formatado, "Tabela_Assessores", df_formatado.columns.tolist())
@@ -1054,4 +1061,5 @@ with tab7:
 st.markdown(
     "<p style='text-align: center; color: #FFD700; font-size: 12px;'>Dashboard Financeiro © 2026 | Vértiq Digital</p>",
     unsafe_allow_html=True)
+
 
