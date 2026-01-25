@@ -15,308 +15,352 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# CSS customizado - Refinado
 st.markdown("""
-  <style>  
-    * {
-    margin: 0;
-    padding: 0;
-}
-
-[data-testid="stAppViewContainer"] {
-    background-color: #0d0d0d !important;
-}
-
-[data-testid="stSidebar"] {
-    background-color: #0d0d0d !important;
-}
-
-/* ===== CONTAINER PARA CARDS ALINHADOS ===== */
-.metrics-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
-    margin-bottom: 30px;
-    width: 100%;
-}
-
-/* ===== CARDS PRINCIPAIS (Receita, Forecast, Pace) ===== */
-.metric-card {
-    background: linear-gradient(135deg, #1a1a1a 0%, #252525 100%);
-    padding: 25px;
-    border-radius: 12px;
-    border: 1px solid rgba(255, 215, 0, 0.4);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
-    color: #E0E0E0;
-    backdrop-filter: blur(10px);
-}
-
-.metric-card-title {
-    font-size: 13px;
-    color: #FFD700;
-    font-weight: 600;
-    margin-bottom: 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    opacity: 0.9;
-}
-
-.metric-card-value {
-    font-size: 28px;
-    font-weight: 700;
-    color: #E0E0E0;
-    line-height: 1.3;
-    margin-bottom: 5px;
-}
-
-.metric-card:hover {
-    border-color: rgba(255, 215, 0, 0.7);
-    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.15);
-    transform: translateY(-2px);
-    transition: all 0.3s ease;
-}
-
-/* ===== CARDS SECUNDÁRIOS (% Meta, Meta Total) ===== */
-.secondary-metrics-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
-    margin-top: 20px;
-}
-
-.secondary-metric-card {
-    background: linear-gradient(135deg, #2a4570 0%, #1a3050 100%);
-    padding: 20px;
-    border-radius: 12px;
-    border: 1px solid rgba(255, 215, 0, 0.3);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(10px);
-}
-
-.secondary-metric-card-title {
-    font-size: 12px;
-    color: #FFD700;
-    font-weight: 600;
-    margin-bottom: 10px;
-    text-transform: uppercase;
-    opacity: 0.85;
-}
-
-.secondary-metric-card-value {
-    font-size: 26px;
-    font-weight: 700;
-    color: #E0E0E0;
-}
-
-.secondary-metric-card:hover {
-    border-color: rgba(255, 215, 0, 0.6);
-    box-shadow: 0 5px 15px rgba(255, 215, 0, 0.1);
-    transition: all 0.3s ease;
-}
-
-/* ===== RANGE CARDS ===== */
-.range-card {
-    background: linear-gradient(135deg, #4a6fa5 0%, #2d5078 100%);
-    padding: 15px;
-    border-radius: 10px;
-    color: white;
-    margin: 5px 0;
-    border-left: 4px solid rgba(255, 215, 0, 0.4);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(5px);
-}
-
-.range-title {
-    font-weight: bold;
-    font-size: 14px;
-    margin-bottom: 5px;
-    color: #FFD700;
-}
-
-.range-classification {
-    font-size: 12px;
-    opacity: 0.9;
-    margin-bottom: 8px;
-    font-weight: 500;
-    color: #E0E0E0;
-}
-
-.range-info {
-    display: flex;
-    justify-content: space-between;
-    font-size: 12px;
-    color: #E0E0E0;
-}
-
-/* ===== OBJETIVO CARD ===== */
-.objetivo-card-dark {
-    background: linear-gradient(135deg, #3a5a8a 0%, #2a4570 100%);
-    padding: 25px;
-    border-radius: 12px;
-    color: white;
-    text-align: center;
-    margin-top: 30px;
-    border: 1px solid rgba(255, 215, 0, 0.3);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(10px);
-}
-
-.objetivo-card-dark h3 {
-    color: #FFD700 !important;
-    margin-bottom: 15px;
-}
-
-/* ===== PROGRESS BAR ===== */
-.progress-bar {
-    background: rgba(255, 255, 255, 0.1);
-    height: 8px;
-    border-radius: 4px;
-    margin-top: 10px;
-    overflow: hidden;
-    border: 1px solid rgba(255, 215, 0, 0.2);
-}
-
-.progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #4a9dd4 0%, #2a7db3 100%);
-    border-radius: 4px;
-    box-shadow: 0 0 10px rgba(74, 157, 212, 0.5);
-}
-
-/* ===== SIDEBAR ===== */
-[data-testid="stSidebarContent"] {
-    background-color: #0d0d0d !important;
-}
-
-[data-testid="stSidebar"] label,
-[data-testid="stSidebar"] p,
-[data-testid="stSidebar"] span,
-[data-testid="stSidebar"] div {
-    color: #FFD700 !important;
-}
-
-/* ===== HEADINGS ===== */
-h1, h2, h3, h4, h5, h6 {
-    color: #FFD700 !important;
-}
-
-/* ===== DATAFRAME & TABLE ===== */
-[data-testid="stDataFrame"],
-[data-testid="stTable"] {
-    background-color: #1a1a1a !important;
-    color: #E0E0E0 !important;
-}
-
-/* ===== METRIC CONTAINER ===== */
-[data-testid="metric-container"] {
-    background: linear-gradient(135deg, #1a1a1a 0%, #252525 100%) !important;
-    padding: 15px !important;
-    border-radius: 12px !important;
-    border: 1px solid rgba(255, 215, 0, 0.3) !important;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5) !important;
-    backdrop-filter: blur(10px) !important;
-}
-
-[data-testid="metric-container"] > div:nth-child(1) {
-    font-size: 14px;
-    color: #FFD700 !important;
-    font-weight: 600;
-}
-
-[data-testid="metric-container"] > div:nth-child(2) {
-    font-size: 24px !important;
-    font-weight: bold;
-    color: #E0E0E0 !important;
-    white-space: normal !important;
-    word-wrap: break-word !important;
-    overflow-wrap: break-word !important;
-    text-align: left !important;
-    padding: 10px 0;
-    line-height: 1.4;
-}
-
-/* ===== INFO CARDS (Missões) ===== */
-.info-card {
-    background: linear-gradient(135deg, #1a1a1a 0%, #252525 100%);
-    padding: 20px;
-    border-radius: 12px;
-    border: 1px solid rgba(255, 215, 0, 0.5);
-    margin-bottom: 20px;
-    color: #E0E0E0;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(10px);
-}
-
-.info-card h3 {
-    color: #FFD700 !important;
-    margin-bottom: 15px;
-    border-bottom: 1px solid rgba(255, 215, 0, 0.3);
-    padding-bottom: 10px;
-}
-
-.info-card ul {
-    list-style-type: none;
-    padding-left: 0;
-}
-
-.info-card li {
-    margin-bottom: 10px;
-    padding-left: 20px;
-    position: relative;
-}
-
-/* ===== BUTTONS ===== */
-.stButton > button {
-    background: linear-gradient(135deg, #FFD700 0%, #B8860B 100%) !important;
-    color: #0d0d0d !important;
-    border: none !important;
-    padding: 0.6rem 2rem !important;
-    border-radius: 50px !important;
-    font-weight: 700 !important;
-    text-transform: uppercase !important;
-    letter-spacing: 1px !important;
-    transition: all 0.3s ease !important;
-    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2) !important;
-    width: 100% !important;
-}
-
-.stButton > button:hover {
-    transform: translateY(-2px) !important;
-    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4) !important;
-    color: #000 !important;
-}
-
-/* ===== TABS ===== */
-.stTabs [data-baseweb="tab-list"] {
-    gap: 15px;
-    background-color: transparent !important;
-}
-
-.stTabs [data-baseweb="tab"] {
-    background-color: #1a1a1a !important;
-    color: #FFD700 !important;
-    border: 1px solid rgba(255, 215, 0, 0.3) !important;
-    border-radius: 8px 8px 0 0 !important;
-    padding: 10px 25px !important;
-    font-weight: 600 !important;
-}
-
-.stTabs [aria-selected="true"] {
-    background-color: #FFD700 !important;
-    color: #0d0d0d !important;
-    border: 1px solid #FFD700 !important;
-}
-
-/* ===== GENERAL TEXT ===== */
-body, p, span, div {
-    color: #E0E0E0 !important;
-}
-
-hr {
-    border-color: rgba(255, 215, 0, 0.3) !important;
-}
 <style>
-    """, unsafe_allow_html=True)
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    /* ===== FUNDO PRINCIPAL ===== */
+    [data-testid="stAppViewContainer"] {
+        background-color: #0d0d0d !important;
+        background-image: none !important;
+    }
+
+    [data-testid="stSidebar"] {
+        background-color: #0d0d0d !important;
+        background-image: none !important;
+    }
+
+    /* ===== SIDEBAR CONTENT ===== */
+    [data-testid="stSidebarContent"] {
+        background-color: #0d0d0d !important;
+    }
+
+    [data-testid="stSidebar"] label,
+    [data-testid="stSidebar"] p,
+    [data-testid="stSidebar"] span,
+    [data-testid="stSidebar"] div {
+        color: #FFD700 !important;
+    }
+
+    /* ===== HEADINGS - TUDO AMARELO ===== */
+    h1, h2, h3, h4, h5, h6 {
+        color: #FFD700 !important;
+    }
+
+    /* ===== TEXTO GERAL ===== */
+    body, p, span, div {
+        color: #E0E0E0 !important;
+    }
+
+    hr {
+        border-color: rgba(255, 215, 0, 0.3) !important;
+    }
+
+    /* ===== METRIC CONTAINER - CARDS PRINCIPAIS (Receita, Forecast, Pace, %, Meta) ===== */
+    [data-testid="metric-container"] {
+        /* MUDANÇA PRINCIPAL: Fundo cinza chumbo sólido e visível */
+        background-color: #2b2b2b !important; 
+        
+        /* Gradiente sutil para dar acabamento premium */
+        background-image: linear-gradient(135deg, #383838 0%, #2b2b2b 100%) !important;
+        
+        padding: 20px !important;
+        border-radius: 12px !important;
+        
+        /* Borda dourada para definir o limite do card */
+        border: 1px solid rgba(255, 215, 0, 0.3) !important;
+        
+        /* Sombra forte para destacar do fundo preto */
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.7) !important;
+        
+        /* Garantir que a cor do texto herde corretamente */
+        color: #E0E0E0 !important;
+    }
+
+    [data-testid="metric-container"]:hover {
+        /* Efeito visual ao passar o mouse */
+        border-color: rgba(255, 215, 0, 0.8) !important;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.9) !important;
+        transform: translateY(-2px) !important;
+        background-color: #333333 !important;
+    }
+
+    /* Ajuste forçado para o título do card dentro do container */
+    [data-testid="metric-container"] > div:nth-child(1) {
+        font-size: 14px !important;
+        color: #FFD700 !important; /* Dourado */
+        font-weight: 600 !important;
+    }
+
+    /* Ajuste forçado para o valor do card */
+    [data-testid="metric-container"] > div:nth-child(2) {
+        color: #FFFFFF !important; /* Branco puro para contraste */
+    }
+
+    /* ===== DATAFRAME & TABLE ===== */
+    [data-testid="stDataFrame"],
+    [data-testid="stTable"] {
+        background-color: #1a1a1a !important;
+        color: #E0E0E0 !important;
+    }
+
+    /* ===== BUTTONS ===== */
+    .stButton > button {
+        background: linear-gradient(135deg, #FFD700 0%, #B8860B 100%) !important;
+        color: #0d0d0d !important;
+        border: none !important;
+        padding: 0.6rem 2rem !important;
+        border-radius: 50px !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 1px !important;
+        transition: all 0.3s ease !important;
+        box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2) !important;
+        width: 100% !important;
+    }
+
+    .stButton > button:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4) !important;
+        color: #000 !important;
+    }
+
+    /* ===== TABS ===== */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 15px !important;
+        background-color: transparent !important;
+    }
+
+    .stTabs [data-baseweb="tab"] {
+        background-color: #1a1a1a !important;
+        color: #FFD700 !important;
+        border: 1px solid rgba(255, 215, 0, 0.3) !important;
+        border-radius: 8px 8px 0 0 !important;
+        padding: 10px 25px !important;
+        font-weight: 600 !important;
+    }
+
+    .stTabs [aria-selected="true"] {
+        background-color: #FFD700 !important;
+        color: #0d0d0d !important;
+        border: 1px solid #FFD700 !important;
+    }
+
+    /* ===== INFO CARDS (Missões) ===== */
+    .info-card {
+        background: linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 100%) !important;
+        padding: 20px !important;
+        border-radius: 12px !important;
+        border: 1px solid rgba(255, 215, 0, 0.5) !important;
+        margin-bottom: 20px !important;
+        color: #E0E0E0 !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.8) !important;
+        backdrop-filter: blur(10px) !important;
+    }
+
+    .info-card h3 {
+        color: #FFD700 !important;
+        margin-bottom: 15px !important;
+        border-bottom: 1px solid rgba(255, 215, 0, 0.3) !important;
+        padding-bottom: 10px !important;
+    }
+
+    .info-card ul {
+        list-style-type: none !important;
+        padding-left: 0 !important;
+    }
+
+    .info-card li {
+        margin-bottom: 10px !important;
+        padding-left: 20px !important;
+        position: relative !important;
+    }
+
+    /* ===== OBJETIVO CARD ===== */
+    .objetivo-card-dark {
+        background: linear-gradient(135deg, #1a3050 0%, #0d1f35 100%) !important;
+        padding: 25px !important;
+        border-radius: 12px !important;
+        color: white !important;
+        text-align: center !important;
+        margin-top: 30px !important;
+        border: 1px solid rgba(255, 215, 0, 0.4) !important;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.8) !important;
+        backdrop-filter: blur(10px) !important;
+    }
+
+    .objetivo-card-dark h3 {
+        color: #FFD700 !important;
+        margin-bottom: 15px !important;
+    }
+
+    /* ===== PROGRESS BAR ===== */
+    .progress-bar {
+        background: rgba(255, 255, 255, 0.1) !important;
+        height: 8px !important;
+        border-radius: 4px !important;
+        margin-top: 10px !important;
+        overflow: hidden !important;
+        border: 1px solid rgba(255, 215, 0, 0.2) !important;
+    }
+
+    .progress-fill {
+        height: 100% !important;
+        background: linear-gradient(90deg, #4a9dd4 0%, #2a7db3 100%) !important;
+        border-radius: 4px !important;
+        box-shadow: 0 0 10px rgba(74, 157, 212, 0.5) !important;
+    }
+
+    /* ===== RANGE CARDS ===== */
+    .range-card {
+        background: linear-gradient(135deg, #1a3050 0%, #0d1f35 100%) !important;
+        padding: 15px !important;
+        border-radius: 10px !important;
+        color: white !important;
+        margin: 5px 0 !important;
+        border-left: 4px solid rgba(255, 215, 0, 0.5) !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.8) !important;
+        backdrop-filter: blur(5px) !important;
+    }
+
+    .range-title {
+        font-weight: bold !important;
+        font-size: 14px !important;
+        margin-bottom: 5px !important;
+        color: #FFD700 !important;
+    }
+
+    .range-classification {
+        font-size: 12px !important;
+        opacity: 0.9 !important;
+        margin-bottom: 8px !important;
+        font-weight: 500 !important;
+        color: #E0E0E0 !important;
+    }
+
+    .range-info {
+        display: flex !important;
+        justify-content: space-between !important;
+        font-size: 12px !important;
+        color: #E0E0E0 !important;
+    }
+
+    /* ===== CONTAINER PARA CARDS ALINHADOS ===== */
+    .metrics-container {
+        display: grid !important;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+        gap: 20px !important;
+        margin-bottom: 30px !important;
+        width: 100% !important;
+    }
+
+    /* ===== CARDS PRINCIPAIS ===== */
+    .metric-card {
+        background: linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 100%) !important;
+        padding: 25px !important;
+        border-radius: 12px !important;
+        border: 1px solid rgba(255, 215, 0, 0.5) !important;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.8) !important;
+        color: #E0E0E0 !important;
+        backdrop-filter: blur(15px) !important;
+        transition: all 0.3s ease !important;
+    }
+
+    .metric-card-title {
+        font-size: 13px !important;
+        color: #FFD700 !important;
+        font-weight: 600 !important;
+        margin-bottom: 12px !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.5px !important;
+        opacity: 0.9 !important;
+    }
+
+    .metric-card-value {
+        font-size: 28px !important;
+        font-weight: 700 !important;
+        color: #E0E0E0 !important;
+        line-height: 1.3 !important;
+        margin-bottom: 5px !important;
+    }
+
+    .metric-card:hover {
+        border-color: rgba(255, 215, 0, 0.8) !important;
+        box-shadow: 0 6px 20px rgba(255, 215, 0, 0.2) !important;
+        transform: translateY(-2px) !important;
+    }
+
+    /* ===== CARDS SECUNDÁRIOS ===== */
+    .secondary-metrics-container {
+        display: grid !important;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)) !important;
+        gap: 20px !important;
+        margin-top: 20px !important;
+    }
+
+    .secondary-metric-card {
+        background: linear-gradient(135deg, #1a3050 0%, #0d1f35 100%) !important;
+        padding: 20px !important;
+        border-radius: 12px !important;
+        border: 1px solid rgba(255, 215, 0, 0.4) !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.8) !important;
+        backdrop-filter: blur(10px) !important;
+        transition: all 0.3s ease !important;
+    }
+
+    .secondary-metric-card-title {
+        font-size: 12px !important;
+        color: #FFD700 !important;
+        font-weight: 600 !important;
+        margin-bottom: 10px !important;
+        text-transform: uppercase !important;
+        opacity: 0.9 !important;
+    }
+
+    .secondary-metric-card-value {
+        font-size: 26px !important;
+        font-weight: 700 !important;
+        color: #E0E0E0 !important;
+    }
+
+    .secondary-metric-card:hover {
+        border-color: rgba(255, 215, 0, 0.6) !important;
+        box-shadow: 0 5px 15px rgba(255, 215, 0, 0.15) !important;
+        transition: all 0.3s ease !important;
+    }
+
+    /* ===== RESPONSIVO PARA MOBILE ===== */
+    @media (max-width: 768px) {
+        [data-testid="metric-container"] > div:nth-child(2) {
+            font-size: 20px !important;
+        }
+
+        .metric-card-value {
+            font-size: 20px !important;
+        }
+
+        .secondary-metric-card-value {
+            font-size: 18px !important;
+        }
+
+        .metrics-container {
+            grid-template-columns: 1fr !important;
+        }
+    }
+
+    /* ===== RESPONSIVO PARA TABLET ===== */
+    @media (max-width: 1024px) {
+        .metrics-container {
+            grid-template-columns: repeat(2, 1fr) !important;
+        }
+    }
+</style>
+""", unsafe_allow_html=True)
+
 
 def format_currency(val):
     """Formata valores para o padrão R$ 1.234,56"""
@@ -472,7 +516,7 @@ with tab1:
                 forecast_val = forecast_rows.iloc[-1, 1] if not forecast_rows.empty else 0
 
                 # Converte para número real (575980.50)
-                forecast_val = float(forecast_val) * 1000000
+                forecast_val = float(forecast_val)
 
 
                 # Realizado do período (12/01 a 16/01)
@@ -495,22 +539,30 @@ with tab1:
                 percent_meta = (total_realizado / meta_total * 100) if meta_total > 0 else 0
 
                 # Primeiros 4 cards
-                m1, m2, m3, m4 = st.columns(4)
+                # Visão Gera
+# PRIMEIRO ROW - 3 cards principais (centralizado)
+                m1, m2, m3 = st.columns(3, gap="medium")
+
                 with m1:
                     st.metric("Receita Total Realizada", format_currency(total_realizado))
+                    
                 with m2:
                     st.metric("Forecast", format_currency(forecast_val))
-               
-                with m4:
+                    
+                with m3:
                     st.metric("Pace", format_currency(meta_dia_util))
-                
+
                 st.markdown("<br>", unsafe_allow_html=True)
-                
-                c1, c2, c3, c4 = st.columns([1, 2, 2, 1])
-                with c2:
+
+                # SEGUNDO ROW - 2 cards (melhor proporção)
+                c1, c2 = st.columns(2, gap="medium")
+
+                with c1:
                     st.metric("% da Meta Atingida", f"{percent_meta:.1f}%")
-                with c3:
+                    
+                with c2:
                     st.metric("Meta Total", format_currency(meta_total))
+
                 
                 st.markdown("---")
                 
@@ -537,6 +589,43 @@ with tab1:
                 )
                 st.plotly_chart(fig_pie, use_container_width=True)
                 
+                st.markdown("---")
+                st.subheader("👤 Receita por Assessor")
+                
+                if 'assessores' in sheets:
+                    df_ass_rec = sheets['assessores'].copy()
+                    # Encontrar colunas de Assessor e Total
+                    col_ass = find_column(df_ass_rec, 'Assessores')
+                    col_tot = find_column(df_ass_rec, 'Total')
+                    
+                    if col_ass and col_tot:
+                        # Limpar dados para garantir que são números
+                        df_ass_rec[col_tot] = pd.to_numeric(df_ass_rec[col_tot], errors='coerce').fillna(0)
+                        
+                        # Filtrar quem tem receita > 0 e ordenar do maior para o menor
+                        df_ass_rec = df_ass_rec[df_ass_rec[col_tot] > 0].sort_values(by=col_tot, ascending=True)
+                        
+                        fig_bar = go.Figure(go.Bar(
+                            x=df_ass_rec[col_tot],
+                            y=df_ass_rec[col_ass],
+                            orientation='h',
+                            marker=dict(color='#FFD700'), # Cor dourada fixa
+                            text=df_ass_rec[col_tot].apply(format_currency), # Valor formatado na barra
+                            textposition='auto',
+                            hovertemplate='<b>%{y}</b> Receita: %{x:,.2f}<extra></extra>'
+                        ))
+                        
+                        fig_bar.update_layout(
+                            paper_bgcolor='rgba(0,0,0,0)',
+                            plot_bgcolor='rgba(0,0,0,0)',
+                            font=dict(color='#FFD700'),
+                            margin=dict(t=20, b=20, l=20, r=20),
+                            xaxis=dict(showgrid=False, showticklabels=False),
+                            yaxis=dict(showgrid=False),
+                            height=max(400, len(df_ass_rec) * 35) # Ajusta altura conforme nº de assessores
+                        )
+                        st.plotly_chart(fig_bar, use_container_width=True)
+
                 st.markdown("---")
                 
                 
@@ -774,47 +863,30 @@ with tab7:
         
         try:
             # SEÇÃO 1: RANGES E OBJETIVOS COM CLASSIFICAÇÃO
+                        # SEÇÃO 1: RANGES E OBJETIVOS (VALORES FIXOS)
             st.subheader("📊 Ranges de Captação Líquida e Objetivos")
             
-            # Mapeamento de ranges para classificações
-            range_classificacao = {
-                '0 - 5 MM': 'Sales Hunter',
-                '10 - 40 MM': 'AAI Pleno',
-                'Acima de 40 MM': 'AAI Senior'
-            }
+            # Definindo os dados fixos para os cards
+            ranges_fixos = [
+                {"titulo": "0 - 5 MM", "classificacao": "Sales Hunter", "objetivo": 1000000.0},
+                {"titulo": "10 - 40 MM", "classificacao": "AAI Pleno", "objetivo": 1500000.0},
+                {"titulo": "Acima de 40 MM", "classificacao": "AAI Senior", "objetivo": 2000000.0}
+            ]
             
-            # Pega ranges únicos e seus objetivos
-            ranges_dict = {}
-            for idx, row in df_captacao.iterrows():
-                range_col = find_column(df_captacao, 'Range')
-                obj_col = find_column(df_captacao, ['Objetivo Cap', 'Objetivo Cap Liq'])
-                
-                if pd.notna(row[range_col]) and pd.notna(row[obj_col]):
-                    range_val = str(row[range_col]).strip()
-                    
-                    if range_val not in ranges_dict and range_val != '':
-                        try:
-                            obj_val = float(
-                                str(row[obj_col]).replace('R$', '').replace('.', '').replace(',', '.').strip()
-                            )
-                            ranges_dict[range_val] = obj_val
-                        except:
-                            pass
-            
-            cols = st.columns(len(ranges_dict))
-            for idx, (range_name, objetivo) in enumerate(ranges_dict.items()):
-                classificacao = range_classificacao.get(range_name, '')
+            cols = st.columns(3)
+            for idx, item in enumerate(ranges_fixos):
                 with cols[idx]:
                     st.markdown(f"""
                     <div class="range-card">
-                        <div class="range-title">{range_name}</div>
-                        <div class="range-classification">{classificacao}</div>
+                        <div class="range-title">{item['titulo']}</div>
+                        <div class="range-classification">{item['classificacao']}</div>
                         <div class="range-info">
                             <span>Objetivo:</span>
-                            <span style="font-weight: bold;">{format_currency(objetivo)}</span>
+                            <span style="font-weight: bold;">{format_currency(item['objetivo'])}</span>
                         </div>
                     </div>
                     """, unsafe_allow_html=True)
+
             
             st.markdown("---")
             
@@ -861,16 +933,16 @@ with tab7:
             
             # Formata colunas
             if col_obj:
-                df_display_final[col_obj] = pd.to_numeric(
-                    df_display_final[col_obj].astype(str).str.replace('R$', '').str.replace('.', '').str.replace(',', '.'),
-                    errors='coerce'
-                ).fillna(0).apply(format_currency)
-            
+                # Remove R$, remove pontos de milhar e troca vírgula por ponto
+                df_display_final[col_obj] = df_display_final[col_obj].astype(str).str.replace('R$', '', regex=False).str.strip()
+                df_display_final[col_obj] = df_display_final[col_obj].apply(lambda x: x.replace('.', '').replace(',', '.') if ',' in x else x)
+                df_display_final[col_obj] = pd.to_numeric(df_display_final[col_obj], errors='coerce').fillna(0).apply(format_currency)
+
             if col_capt_liq:
-                df_display_final[col_capt_liq] = pd.to_numeric(
-                    df_display_final[col_capt_liq].astype(str).str.replace('R$', '').str.replace('.', '').str.replace(',', '.'),
-                    errors='coerce'
-                ).fillna(0).apply(format_currency)
+                df_display_final[col_capt_liq] = df_display_final[col_capt_liq].astype(str).str.replace('R$', '', regex=False).str.strip()
+                df_display_final[col_capt_liq] = df_display_final[col_capt_liq].apply(lambda x: x.replace('.', '').replace(',', '.') if ',' in x else x)
+                df_display_final[col_capt_liq] = pd.to_numeric(df_display_final[col_capt_liq], errors='coerce').fillna(0).apply(format_currency)
+
             
             if col_cap_obj:
                 df_display_final[col_cap_obj] = df_display_final[col_cap_obj].apply(
@@ -982,3 +1054,4 @@ with tab7:
 st.markdown(
     "<p style='text-align: center; color: #FFD700; font-size: 12px;'>Dashboard Financeiro © 2026 | Vértiq Digital</p>",
     unsafe_allow_html=True)
+
