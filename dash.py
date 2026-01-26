@@ -529,7 +529,7 @@ with tab1:
                 
                 # Média semanal por dias uteis
                 meta_dia_row = df_vg[df_vg.iloc[:, 0].astype(str).str.contains('Meta dia útil', case=False, na=False)]
-                meta_dia_util = meta_dia_row.iloc[0, 1] if not meta_dia_row.empty else '115%'
+                meta_dia_util = meta_dia_row.iloc[0, 1] if not meta_dia_row.empty else '125%'
                 
                 # Meta do mês
                 meta_rows = df_vg[df_vg.iloc[:, 0].astype(str).str.contains('Meta', case=False, na=False)]
@@ -1062,6 +1062,7 @@ with tab7:
 st.markdown(
     "<p style='text-align: center; color: #FFD700; font-size: 12px;'>Dashboard Financeiro © 2026 | Vértiq Digital</p>",
     unsafe_allow_html=True)
+
 
 
 
