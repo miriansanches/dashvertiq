@@ -794,9 +794,10 @@ with tab5:
             col_pace = next((c for c in df_formatado.columns if 'pace' in c.lower()), None)
             
             if col_forecast:
-                # Converte para numérico e formata como porcentagem
-                df_formatado[col_forecast] = pd.to_numeric(df_formatado[col_forecast], errors='coerce')
-                df_formatado[col_forecast] = df_formatado[col_forecast].apply(lambda x: f"{x:.0%}" if pd.notnull(x) else "-")
+                df_formatado[col_forecast] = pd.to_numeric(
+                df_formatado[col_forecast].astype(str).str.replace('R$', '').str.replace('-', '0').str.strip(), 
+                    errors='coerce'
+                 ).fillna(0).apply(format_currency)
 
             if col_pace:
                 # Converte para numérico e formata como porcentagem (com 1 casa decimal)
@@ -1061,6 +1062,7 @@ with tab7:
 st.markdown(
     "<p style='text-align: center; color: #FFD700; font-size: 12px;'>Dashboard Financeiro © 2026 | Vértiq Digital</p>",
     unsafe_allow_html=True)
+
 
 
 
