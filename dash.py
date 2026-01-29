@@ -441,7 +441,8 @@ def display_data_table(df, title, column_names, max_rows=15):
         df_filtered = df_filtered.dropna(how='all').head(max_rows)
         
         # COLUNAS QUE DEVEM SER FORMATADAS COMO R$
-        money_keywords = ['receita', 'vendido', 'objetivo', 'valor', 'parcela', 'realizado', 'meta', 'pipeline', 'whole life','pj 2', 'internacional', 'plano saude', 'câmbio', 'fundos', 'resultado', 'consorcios', 'seguros', 'maxima', 'prem', 'coe', 'pj2', 'rv', 'rf', 'objetivo', 'consórcio', 'total', 'Forecast']
+        money_keywords = ['receita', 'vendido', 'objetivo', 'valor', 'parcela', 'realizado', 'meta', 'pipeline', 'whole life','pj 2', 'internacional', 'plano saude', 'câmbio', 'fundos', 'resultado', 'consorcios', 'seguros', 'maxima', 'prem', 'coe', 'pj2', 'rv', 'rf', 'objetivo', 'consórcio', 'total', 'Forecast', 'Volume','Cap Liq', 'necessário para campanha', 'obj. cap. liq', 'obj. cap', 'cap liq', 'consorcio', 'valor venda']
+
         
         # COLUNAS QUE DEVEM FICAR COMO NÚMEROS (NÃO MOEDA)
         number_keywords = ['convertidos', 'reuniões', 'boletas ', 'elegivel' ]
@@ -489,7 +490,7 @@ else:
 
 st.sidebar.markdown("---")
 
-tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs(["Visão Geral", "Consórcios", "Seguros", "Advisor", "Time Comercial", "Comercial - Pipeline", "Captação Liq"])
+tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8 = st.tabs(["Visão Geral", "Consórcios", "Seguros", "Advisor", "Time Comercial", "Comercial - Pipeline", "Captação Liq", 'Campanha - Hot Money'])
 
 with tab1:
     st.markdown("## 📈 Visão Geral")
@@ -529,7 +530,7 @@ with tab1:
                 
                 # Média semanal por dias uteis
                 meta_dia_row = df_vg[df_vg.iloc[:, 0].astype(str).str.contains('Meta dia útil', case=False, na=False)]
-                meta_dia_util = meta_dia_row.iloc[0, 1] if not meta_dia_row.empty else '125%'
+                meta_dia_util = meta_dia_row.iloc[0, 1] if not meta_dia_row.empty else '114%'
                 
                 # Meta do mês
                 meta_rows = df_vg[df_vg.iloc[:, 0].astype(str).str.contains('Meta', case=False, na=False)]
@@ -671,7 +672,7 @@ with tab3:
         
         st.markdown("---")
         st.subheader("📊 Pipeline de Seguros")
-        display_data_table(df, "Pipeline Seguros", ['Whole life', 'Vida', 'Plano Saude', 'Valor Parcela', 'Receita Projetada'])
+        display_data_table(df, "Pipeline Seguros", ['Whole life', 'Vida', 'Plano Saude', 'Receita Do Mês', 'Receita Acumulada'])
     else:
         st.warning("⚠️ Sheet 'seguros' não encontrada.")
 
@@ -685,7 +686,7 @@ with tab4:
             df = sheets['advisor - geral']
             st.subheader("📋 Advisor - Geral")
             df_geral = safe_filter_by_column(df, 'Assessor')
-            display_data_table(df_geral, "Advisor Geral", ['Assessor', 'Reuniões realizadas', 'Convertidos', 'Produto'])
+            display_data_table(df_geral, "Advisor Geral", ['Assessor', 'Reuniões realizadas', 'Convertidos', 'Produto', 'Valor Venda'])
             
             st.markdown("---")
             st.subheader("📊 Pipeline Advisor")
@@ -982,8 +983,8 @@ with tab7:
             
             # Converte valores
             objetivo_total = float(str(total_row['Objetivo Cap Liq']).replace("R$", "").replace(".", "").replace(",", ".")) if pd.notna(total_row['Objetivo Cap Liq']) else 16000000
-            captacao_total = float(str(total_row['Captação Líquida']).replace("R$", "").replace(".", "").replace(",", ".")) if pd.notna(total_row['Captação Líquida']) else 988423700
-            percentual_objetivo = float(str(total_row['Cap x Objetivo']).replace("%", "").strip()) if pd.notna(total_row['Cap x Objetivo']) else 58
+            captacao_total = float(str(total_row['Captação Líquida']).replace("R$", "").replace(".", "").replace(",", ".")) if pd.notna(total_row['Captação Líquida']) else 11314555
+            percentual_objetivo = float(str(total_row['Cap x Objetivo']).replace("%", "").strip()) if pd.notna(total_row['Cap x Objetivo']) else 71
             
             # Soma ativações e habilitações
             ativacoes_total = pd.to_numeric(df_captacao[col_ativacoes], errors='coerce').sum()
@@ -1057,6 +1058,65 @@ with tab7:
             st.error(f"❌ Erro ao processar dados de Captação Líquida: {str(e)}")
     else:
         st.warning("⚠️ Aba 'captação liq' não encontrada na planilha!")
+
+# ========== CAMPANHA HOT MONEY ==========
+with tab8:
+    st.markdown("## 🔥 Campanha Hot Money - Janeiro 2026")
+    st.markdown("---")
+    
+    # CARD EXPLICATIVO DA CAMPANHA (em cima da tabela)
+    with st.container(border=True):
+        col_info, col_meta = st.columns([2, 1], gap="medium")
+        
+        with col_info:
+            st.markdown("### O que é a Campanha?")
+            st.markdown("""
+            A "Hot Money" é uma **iniciativa interna** para fecharmos o mês de janeiro com uma **captação líquida mínima de R$ 13,3 milhões** no escritório.
+            
+            Considerando apenas os assessores ativos, precisamos buscar mais **R$ 4 milhões** para atingir o objetivo, 
+            assumindo que os assessores deficitários atinjam ao menos **70% da meta mensal**.
+            """)
+            
+        with col_meta:
+            st.markdown("### 🎯 Meta Principal")
+            st.metric("Captação Líquida", "R$ 13.300.000", "+R$ 4.000.000")
+    
+    # CARDS COM ELEGIBILIDADE E PRÊMIO
+    card1, card2, card3 = st.columns(3, gap="medium")
+    
+    with card1:
+        st.markdown("### Elegibilidade")
+        st.markdown("""
+        **Mínimo 70%** da meta mensal de captação líquida
+        """)
+    
+    with card2:
+        st.markdown("### Premiação")
+        st.markdown("""
+        **Almoço especial do time** (local a definir)
+        """)
+    
+    with card3:
+        st.markdown("### Participantes")
+        st.markdown("""
+        Todos os assessores que atingirem **70%+** da meta
+        """)
+    
+    st.markdown("---")
+    
+    # TABELA DOS DADOS (aqui entra sua tabela original)
+    if sheets and 'Hot Money' in sheets:
+        df_hot_money = sheets['Hot Money']
+        
+        display_data_table(
+            df_hot_money,
+            "Hot Money",
+            column_names=['Assessor', 'Posição', 'Obj. Cap. Liq','Meta Campanha (70%)','Cap Liq', 'Necessário para Campanha'],
+            max_rows=50
+        )
+    else:
+        st.info("📌 Carregue o arquivo Excel com a sheet 'Campanha - Hot Money'")
+
 
 
 st.markdown(
