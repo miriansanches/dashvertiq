@@ -918,6 +918,17 @@ with tab7:
             # Remove a linha de totais
             df_display = df_captacao[df_captacao[col_assessor].notna()].copy()
             df_display = df_display[~df_display[col_assessor].astype(str).str.strip().isin(['', 'nan'])].copy()
+
+            # Encontrar a linha "Soma" e parar LÁ (incluindo-a)
+            if col_assessor and df_display is not None and len(df_display) > 0:
+                soma_indices = df_display[
+                df_display[col_assessor].astype(str).str.strip() == 'Soma'
+                ].index
+    
+            if len(soma_indices) > 0:
+                soma_idx = soma_indices[0]
+                df_display = df_display.loc[:soma_idx].copy()  # Pega até "Soma" (incluindo)
+
             
             # Remove última linha se for linha de totais
             if len(df_display) > 0 and df_display.iloc[-1][col_assessor] == '':
@@ -1045,11 +1056,7 @@ with tab7:
                 ])
                 st.metric("Assessores com Captação Positiva", f"{assessores_positivos}")
             
-            with col_d:
-                # Calcula corretamente apenas com assessores válidos, sem incluir linhas vazias
-                assessores_validos = df_display[df_display[col_assessor].notna()].copy()
-                media_captacao = captacao_total / max(len(assessores_validos), 1)
-                st.metric("Média de Captação", format_currency(media_captacao))
+         
             
             st.markdown("---")
             st.markdown("*Dashboard atualizado dinamicamente a partir da planilha | Vértiq Investimentos*")
@@ -1122,6 +1129,7 @@ with tab8:
 st.markdown(
     "<p style='text-align: center; color: #FFD700; font-size: 12px;'>Dashboard Financeiro © 2026 | Vértiq Digital</p>",
     unsafe_allow_html=True)
+
 
 
 
