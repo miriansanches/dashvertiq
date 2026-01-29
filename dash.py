@@ -441,7 +441,7 @@ def display_data_table(df, title, column_names, max_rows=15):
         df_filtered = df_filtered.dropna(how='all').head(max_rows)
         
         # COLUNAS QUE DEVEM SER FORMATADAS COMO R$
-        money_keywords = ['receita', 'vendido', 'objetivo', 'valor', 'parcela', 'realizado', 'meta', 'pipeline', 'whole life','pj 2', 'internacional', 'plano saude', 'câmbio', 'fundos', 'resultado', 'consorcios', 'seguros', 'maxima', 'prem', 'coe', 'pj2', 'rv', 'rf', 'objetivo', 'consórcio', 'total', 'Forecast', 'Volume','Cap Liq', 'necessário para campanha', 'obj. cap. liq', 'obj. cap', 'cap liq', 'consorcio', 'valor venda']
+        money_keywords = ['receita', 'vendido', 'objetivo', 'valor', 'parcela', 'realizado', 'meta', 'pipeline', 'whole life','pj 2', 'internacional', 'plano saude', 'câmbio', 'fundos', 'resultado', 'consorcios', 'seguros', 'maxima', 'prem', 'coe', 'pj2', 'rv', 'rf', 'objetivo', 'consórcio', 'total', 'Forecast', 'Volume','Cap Liq', 'necessário para campanha', 'obj. cap. liq', 'obj. cap', 'cap liq', 'consorcio', 'valor venda', 'volume']
 
         
         # COLUNAS QUE DEVEM FICAR COMO NÚMEROS (NÃO MOEDA)
@@ -1122,6 +1122,7 @@ with tab8:
 st.markdown(
     "<p style='text-align: center; color: #FFD700; font-size: 12px;'>Dashboard Financeiro © 2026 | Vértiq Digital</p>",
     unsafe_allow_html=True)
+
 
 
 
