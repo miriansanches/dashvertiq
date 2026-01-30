@@ -441,7 +441,7 @@ def display_data_table(df, title, column_names, max_rows=15):
         df_filtered = df_filtered.dropna(how='all').head(max_rows)
         
         # COLUNAS QUE DEVEM SER FORMATADAS COMO R$
-        money_keywords = ['receita', 'vendido', 'objetivo', 'valor', 'parcela', 'realizado', 'meta', 'pipeline', 'whole life','pj 2', 'internacional', 'plano saude', 'câmbio', 'fundos', 'resultado', 'consorcios', 'seguros', 'maxima', 'prem', 'coe', 'pj2', 'rv', 'rf', 'objetivo', 'consórcio', 'total', 'Forecast', 'Volume','Cap Liq', 'necessário para campanha', 'obj. cap. liq', 'obj. cap', 'cap liq', 'consorcio', 'valor venda', 'volume']
+        money_keywords = ['receita', 'vendido', 'objetivo', 'valor', 'parcela', 'realizado', 'meta', 'pipeline', 'whole life','pj 2', 'internacional', 'plano saude', 'câmbio', 'fundos', 'resultado', 'consorcios', 'seguros', 'maxima', 'prem', 'coe', 'pj2', 'rv', 'rf', 'objetivo', 'consórcio', 'total', 'Forecast', 'Volume','Cap Liq', 'necessário para campanha', 'obj. cap. liq', 'obj. cap', 'cap liq', 'consorcio', 'valor venda']
 
         
         # COLUNAS QUE DEVEM FICAR COMO NÚMEROS (NÃO MOEDA)
@@ -994,8 +994,8 @@ with tab7:
             
             # Converte valores
             objetivo_total = float(str(total_row['Objetivo Cap Liq']).replace("R$", "").replace(".", "").replace(",", ".")) if pd.notna(total_row['Objetivo Cap Liq']) else 16000000
-            captacao_total = float(str(total_row['Captação Líquida']).replace("R$", "").replace(".", "").replace(",", ".")) if pd.notna(total_row['Captação Líquida']) else 11314555
-            percentual_objetivo = float(str(total_row['Cap x Objetivo']).replace("%", "").strip()) if pd.notna(total_row['Cap x Objetivo']) else 71
+            captacao_total = float(str(total_row['Captação Líquida']).replace("R$", "").replace(".", "").replace(",", ".")) if pd.notna(total_row['Captação Líquida']) else 14330746
+            percentual_objetivo = float(str(total_row['Cap x Objetivo']).replace("%", "").strip()) if pd.notna(total_row['Cap x Objetivo']) else 90
             
             # Soma ativações e habilitações
             ativacoes_total = pd.to_numeric(df_captacao[col_ativacoes], errors='coerce').sum()
@@ -1078,7 +1078,7 @@ with tab8:
         with col_info:
             st.markdown("### O que é a Campanha?")
             st.markdown("""
-            A "Hot Money" é uma **iniciativa interna** para fecharmos o mês de janeiro com uma **captação líquida mínima de R$ 13,3 milhões** no escritório.
+            A "Hot Money" é uma **iniciativa interna** para fecharmos o mês de janeiro com uma **captação líquida mínima de R$ 13,0 milhões** no escritório.
             
             Considerando apenas os assessores ativos, precisamos buscar mais **R$ 4 milhões** para atingir o objetivo, 
             assumindo que os assessores deficitários atinjam ao menos **70% da meta mensal**.
@@ -1086,7 +1086,7 @@ with tab8:
             
         with col_meta:
             st.markdown("### 🎯 Meta Principal")
-            st.metric("Captação Líquida", "R$ 13.300.000", "+R$ 4.000.000")
+            st.metric("Captação Líquida", "R$ 13.000.000", "+R$ 4.000.000")
     
     # CARDS COM ELEGIBILIDADE E PRÊMIO
     card1, card2, card3 = st.columns(3, gap="medium")
@@ -1129,7 +1129,6 @@ with tab8:
 st.markdown(
     "<p style='text-align: center; color: #FFD700; font-size: 12px;'>Dashboard Financeiro © 2026 | Vértiq Digital</p>",
     unsafe_allow_html=True)
-
 
 
 
