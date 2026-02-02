@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
@@ -530,7 +529,7 @@ with tab1:
                 
                 # Média semanal por dias uteis
                 meta_dia_row = df_vg[df_vg.iloc[:, 0].astype(str).str.contains('Meta dia útil', case=False, na=False)]
-                meta_dia_util = meta_dia_row.iloc[0, 1] if not meta_dia_row.empty else '114%'
+                meta_dia_util = meta_dia_row.iloc[0, 1] if not meta_dia_row.empty else '103%'
                 
                 # Meta do mês
                 meta_rows = df_vg[df_vg.iloc[:, 0].astype(str).str.contains('Meta', case=False, na=False)]
@@ -603,8 +602,14 @@ with tab1:
                         # Limpar dados para garantir que são números
                         df_ass_rec[col_tot] = pd.to_numeric(df_ass_rec[col_tot], errors='coerce').fillna(0)
                         
+                        # === NOVO CÓDIGO: REMOVER A LINHA SOMA ===
+                        # Filtra removendo qualquer linha que contenha "Soma" ou "Total" na coluna de assessores
+                        df_ass_rec = df_ass_rec[~df_ass_rec[col_ass].astype(str).str.contains('Soma|Total', case=False, na=False)]
+                        # =========================================
+
                         # Filtrar quem tem receita > 0 e ordenar do maior para o menor
                         df_ass_rec = df_ass_rec[df_ass_rec[col_tot] > 0].sort_values(by=col_tot, ascending=True)
+                
                         
                         fig_bar = go.Figure(go.Bar(
                             x=df_ass_rec[col_tot],
@@ -759,7 +764,7 @@ with tab4:
         df = sheets['banco master']
         st.subheader("Banco Master")
         df_master = safe_filter_by_column(df, 'Assessores')
-        display_data_table(df_master, "Banco Master", ['Assessore', 'Volume FGC', 'Volume Convertido'])
+        display_data_table(df_master, "Banco Master", ['Assessores', 'Valor Total Aplicado'])
 
 with tab5:
 
@@ -1129,13 +1134,3 @@ with tab8:
 st.markdown(
     "<p style='text-align: center; color: #FFD700; font-size: 12px;'>Dashboard Financeiro © 2026 | Vértiq Digital</p>",
     unsafe_allow_html=True)
-
-
-
-
-
-
-
-
-
-
